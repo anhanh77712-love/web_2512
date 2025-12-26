@@ -141,10 +141,37 @@ class product_list extends controllers{
     }
     function delete($id){
         $kq = $this->pdlist->products_delete($id);
+        
+        // Nhúng thư viện SweetAlert2 nếu trang của bạn chưa có
+        echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+        echo '<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>'; // Nếu cần
+
         if($kq){
-            echo "<script>alert('Xóa sản phẩm thành công'); window.location.href='/web_qlsp/product_list';</script>";
+            echo "
+            <script>
+                $(document).ready(function(){
+                    Swal.fire({
+                        title: 'Đã xóa!',
+                        text: 'Sản phẩm đã được xóa thành công.',
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.href = '/web_qlsp/product_list';
+                    });
+                });
+            </script>";
         } else {
-            echo "<script>alert('Xóa sản phẩm thất bại');</script>";
+            echo "
+            <script>
+                $(document).ready(function(){
+                    Swal.fire({
+                        title: 'Lỗi!',
+                        text: 'Không thể xóa sản phẩm này.',
+                        icon: 'error'
+                    }).then(() => {
+                        window.history.back();
+                    });
+                });
+            </script>";
         }
     }
 }
