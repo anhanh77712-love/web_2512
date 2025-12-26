@@ -44,9 +44,10 @@
             </button>
 
             <!-- Button Export Excel -->
-            <a href="?export=1" class="btn btn-success">
+            <button type="submit" class="btn btn-success" name="btnXuat"> 
                 <i class="fas fa-file-excel"></i> Xuất Excel
-            </a>
+            </button>
+
 
         </form>
     </div>

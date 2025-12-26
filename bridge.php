@@ -2,6 +2,8 @@
     include_once './MVC/Core/app.php';
     include_once './MVC/Core/controllers.php';
     include_once './MVC/Core/connectDB.php';
+    include_once './Public/Classes/PHPExcel.php';
+    include_once './Public/Classes/PHPExcel/IOFactory.php';
      // 1. Khởi động session nếu index.php chưa khởi động
     if (session_status() === PHP_SESSION_NONE) {
         session_start();

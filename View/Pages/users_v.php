@@ -3,6 +3,9 @@
         <h4 class="fw-bold mb-1">Danh sách Khách hàng</h4>
         <p class="text-muted small mb-0">Quản lý thông tin người dùng của hệ thống</p>
     </div>
+    <a href="http://localhost/web_qlsp/users/export_excel" class="btn btn-success shadow-sm">
+        <i class="fas fa-file-excel me-2"></i> Xuất Excel
+    </a>
 </div>
 
 <div class="card border-0 shadow-sm">

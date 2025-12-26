@@ -1,5 +1,5 @@
 <?php
-class import extends controllers {
+class import_file extends controllers {
     private $sp;
     private $cate;
 
@@ -11,7 +11,7 @@ class import extends controllers {
 
     function Get_data() {
         $this->view('Master', [
-            'Page' => 'import_v'
+            'page' => 'import_v'
         ]);
     }
 
@@ -102,8 +102,7 @@ class import extends controllers {
         }
     }
 
-    
-   function upload_categories() {
+    function upload_categories() {
         if(isset($_POST['btnUpload'])){
             if(isset($_FILES['txtfile']) && $_FILES['txtfile']['error'] == 0) {
                 $file = $_FILES['txtfile']['tmp_name'];
@@ -111,30 +110,20 @@ class import extends controllers {
                 $objExcel = $objReader->load($file);
                 $sheetData = $objExcel->getActiveSheet()->toArray(null, true, true, true);
 
-                $successCount = 0;
                 for($i = 2; $i <= count($sheetData); $i++){
-                    $name = trim($sheetData[$i]["A"]); 
-                    if(empty($name)) continue; // Bỏ qua dòng trống
-
+                    $name = $sheetData[$i]["A"];
                     $slug = !empty($sheetData[$i]["B"]) ? $sheetData[$i]["B"] : $this->create_slug($name);
-                    $thumbnail = isset($sheetData[$i]["C"]) ? $sheetData[$i]["C"] : "";
+                    $thumbnail = $sheetData[$i]["C"];
 
-                    // BƯỚC QUAN TRỌNG: Kiểm tra trùng Slug trước khi gọi Insert
-                    $check = $this->cate->checkDuplicate($slug); 
-                    if($check == 0) {
+                    if(!empty($name)) {
                         $this->cate->categories_insert($name, $slug, $thumbnail);
-                        $successCount++;
                     }
                 }
-                // Dùng SweetAlert2 cho chuyên nghiệp
-                echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-                <script>
-                    window.onload = function() {
-                        Swal.fire('Thành công', 'Đã thêm ' + $successCount + ' danh mục mới', 'success')
-                        .then(() => { window.location.href='/web_qlsp/import'; });
-                    };
-                </script>";
+                echo "<script>alert('Import danh mục thành công!')</script>";
+            } else {
+                echo "<script>alert('Vui lòng chọn file hợp lệ!')</script>";
             }
+            $this->view('Master', ['Page' => 'import_v']);
         }
     }
 

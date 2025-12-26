@@ -27,7 +27,7 @@
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar navbar-expand-lg sticky-top">
   <div class="container">
-    <a class="navbar-brand" href="/index.php">
+    <a class="navbar-brand" href="http://localhost/web_qlsp/home">
         COOLMATE<span style="color:#2f5acf">.ME</span>
     </a>
 
@@ -171,9 +171,9 @@
                 </div>
             <?php else: ?>
                 <div class="auth-links small">
-                    <a href="#" class="text-dark text-decoration-none fw-bold" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a>
+                    <a href="#" class="text-dark text-decoration-none fw-bold btnok" data-bs-toggle="modal" data-bs-target="#loginModal" >Đăng nhập</a>
                     <span class="mx-1 text-muted">/</span>
-                    <a href="#" class="text-dark text-decoration-none fw-bold" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a>
+                    <a href="#" class="text-dark text-decoration-none fw-bold btnok" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a>
                 </div>
             <?php endif; ?>
         </div>

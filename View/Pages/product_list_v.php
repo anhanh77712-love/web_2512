@@ -28,11 +28,10 @@
             <i class="fas fa-search"></i> Tìm
         </button>
 
-        <!-- Button Export Excel -->
-        <a href="http://localhost/web_qlsp/product_list/export"
-           class="btn btn-success">
+       <button type="submit" class="btn btn-success" name="btn-success"> 
             <i class="fas fa-file-excel"></i> Xuất Excel
-        </a>
+        </button>
+        
     </form>
 
     <!-- Add product -->

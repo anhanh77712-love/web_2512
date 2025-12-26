@@ -3,6 +3,11 @@ class categories_m extends connectDB {
     function __construct() {
         parent::__construct();
     }
+    public function checkDuplicate($slug) {
+        $sql = "SELECT id FROM categories WHERE slug = '$slug'";
+        $result = mysqli_query($this->con, $sql);
+        return mysqli_num_rows($result);
+    }
     function categories_selectAll() {
         $sql = "SELECT * FROM categories ORDER BY id DESC";
         return mysqli_query($this->con, $sql);

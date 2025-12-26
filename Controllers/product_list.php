@@ -20,6 +20,74 @@ class product_list extends controllers{
                 'search'=>$search
             ]);
         }
+        // PHẦN XUẤT EXCEL
+    else if(isset($_POST['btn-success'])){
+        // Không cần require lại nếu đã có trong bridge.php
+        // Kiểm tra xem class đã tồn tại chưa để tránh lỗi trắng trang
+        if (!class_exists('PHPExcel')) {
+            die("Lỗi: Thư viện PHPExcel chưa được nạp. Hãy kiểm tra lại file bridge.php");
+        }
+
+        $objExcel = new PHPExcel();
+        $objExcel->setActiveSheetIndex(0);
+        $sheet = $objExcel->getActiveSheet()->setTitle('Data_Products');
+
+        // 1. Tiêu đề các cột (Khớp 100% với database của bạn)
+        $rowCount = 1;
+        $columns = [
+            'A'=>'ID', 'B'=>'Category ID', 'C'=>'Collection ID', 'D'=>'Tên sản phẩm',
+            'E'=>'Slug', 'F'=>'Mô tả', 'G'=>'Giá gốc', 'H'=>'Giới tính',
+            'I'=>'Ảnh (Thumbnail)', 'J'=>'Lượt xem', 'K'=>'Ngày tạo'
+        ];
+
+        foreach($columns as $col => $title) {
+            $sheet->setCellValue($col.$rowCount, $title);
+            $sheet->getStyle($col.$rowCount)->getFont()->setBold(true);
+        }
+
+        // 2. Lấy dữ liệu từ hàm tìm kiếm
+        $keyword = $_POST['txtSearch'] ?? ''; 
+        $data = $this->pdlist->products_select('',$keyword); 
+
+        if($data){
+            while($row = mysqli_fetch_array($data)){
+                $rowCount++;
+                $sheet->setCellValue('A'.$rowCount, $row['id']);
+                $sheet->setCellValue('B'.$rowCount, $row['category_id']);
+                $sheet->setCellValue('C'.$rowCount, $row['collection_id']);
+                $sheet->setCellValue('D'.$rowCount, $row['name']);
+                $sheet->setCellValue('E'.$rowCount, $row['slug']);
+                $sheet->setCellValue('F'.$rowCount, $row['description']);
+                $sheet->setCellValue('G'.$rowCount, $row['base_price']);
+                $sheet->setCellValue('H'.$rowCount, $row['gender']);
+                $sheet->setCellValue('I'.$rowCount, $row['thumbnail']);
+                $sheet->setCellValue('J'.$rowCount, $row['views']);
+                $sheet->setCellValue('K'.$rowCount, $row['created_at']);
+            }
+        }
+
+        // Tự động căn chỉnh độ rộng cột
+        foreach(range('A','K') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // 3. Xuất file và dọn dẹp bộ nhớ đệm
+        $filename = "Export_Full_Products_" . time() . ".xlsx";
+        
+        // Xóa bộ nhớ đệm để tránh lỗi file Excel bị hỏng
+        if (ob_get_length()) {
+            ob_end_clean();
+        }
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'.$filename.'"');
+        header('Cache-Control: max-age=0');
+
+        $objWriter = PHPExcel_IOFactory::createWriter($objExcel, 'Excel2007');
+        $objWriter->save('php://output');
+        exit;
+    }
+
     }
     
     function sua($id){

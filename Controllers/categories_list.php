@@ -93,5 +93,52 @@ class categories_list extends controllers{
                 'search'=>$search
             ]);
         }
+           else if(isset($_POST['btnXuat'])){
+            // Khởi tạo PHPExcel (Đã được nạp từ bridge.php)
+            $objExcel = new PHPExcel();
+            $objExcel->setActiveSheetIndex(0);
+            $sheet = $objExcel->getActiveSheet()->setTitle('Danh_Muc_San_Pham');
+
+            // 1. Tạo tiêu đề cột dựa trên bảng categories
+            $rowCount = 1;
+            $sheet->setCellValue('A'.$rowCount, 'ID');
+            $sheet->setCellValue('B'.$rowCount, 'TÊN DANH MỤC');
+            $sheet->setCellValue('C'.$rowCount, 'SLUG');
+            $sheet->setCellValue('D'.$rowCount, 'TRẠNG THÁI');
+            $sheet->setCellValue('E'.$rowCount, 'HÌNH ẢNH');
+            
+            // Định dạng in đậm tiêu đề
+            $sheet->getStyle('A1:E1')->getFont()->setBold(true);
+
+            // 2. Lấy dữ liệu từ hàm categories_select($name) trong Model của bạn
+            $name = $_POST['txtSearch'] ?? ''; 
+            $data = $this->ctlist->categories_select($name); 
+
+            if($data){
+                while($row = mysqli_fetch_array($data)){
+                    $rowCount++;
+                    $sheet->setCellValue('A'.$rowCount, $row['id']);
+                    $sheet->setCellValue('B'.$rowCount, $row['name']);
+                    $sheet->setCellValue('C'.$rowCount, $row['slug']);
+                    $sheet->setCellValue('D'.$rowCount, ($row['status'] == 1 ? 'Hiển thị' : 'Ẩn'));
+                    $sheet->setCellValue('E'.$rowCount, $row['thumbnail']);
+                }
+            }
+
+            // Tự động giãn chiều rộng cột
+            foreach(range('A','E') as $col) {
+                $sheet->getColumnDimension($col)->setAutoSize(true);
+            }
+
+            // 3. Xuất file
+            $filename = "Danh_Muc_" . time() . ".xlsx";
+            if (ob_get_length()) ob_end_clean();
+
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="'.$filename.'"');
+            $objWriter = PHPExcel_IOFactory::createWriter($objExcel, 'Excel2007');
+            $objWriter->save('php://output');
+            exit;
+        }
     }
 }
